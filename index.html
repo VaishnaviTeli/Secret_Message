@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Secret Message</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: url("image.png") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: black;
+    }
+
+    form {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #00b894;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #linkBox {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto 0;
+      max-width: 400px;
+      display: none;
+    }
+
+    #linkBox p {
+      margin: 0;
+      color: #fff;
+      font-size: 16px;
+      color: black;
+    }
+    #generatedLink {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 Create Secret Message</h2>
+
+  <form id="secretForm">
+    <label>Your Secret Message:</label>
+    <textarea id="message" required></textarea>
+
+    <label>Secret Code:</label>
+    <input type="text" id="secretCode" required />
+
+    <button type="submit">Generate Link</button>
+  </form>
+
+  <div id="linkBox">
+    <p>💌 Send this link to your friend:</p>
+    <input type="text" id="generatedLink" readonly>
+    <button onclick="copyLink()">Copy Link</button>
+  </div>
+
+  <script>
+    document.getElementById("secretForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const message = document.getElementById("message").value;
+      const code = document.getElementById("secretCode").value;
+
+      if (!message || !code) {
+        alert("Please fill in both fields.");
+        return;
+      }
+
+      const encoded = encodeURIComponent(btoa(`${message}|${code}`));
+      const link = `${location.origin}/view.html?data=${encoded}`;
+
+      document.getElementById("generatedLink").value = link;
+      document.getElementById("linkBox").style.display = "block";
+    });
+
+    function copyLink() {
+      const linkInput = document.getElementById("generatedLink");
+      navigator.clipboard.writeText(linkInput.value)
+        .then(() => alert("✅ Link copied to clipboard!"))
+        .catch(() => alert("❌ Failed to copy link."));
+    }
+  </script>
+
+</body>
+</html>

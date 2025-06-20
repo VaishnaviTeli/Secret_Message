@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Secret Message</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: url("image2.jpg") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      color: #fff;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      margin: 10px auto;
+    }
+
+    button {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px;
+      background-color: #6c5ce7;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    #output {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      margin-top: 10px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
+
+    #output h3 {
+      margin-bottom: 10px;
+    }
+
+    #timer {
+      margin-top: 15px;
+      color: #ff7675;
+      font-size: 16px;
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 20px;
+      }
+
+      input, button {
+        font-size: 14px;
+      }
+
+      #timer {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔍 View Secret Message</h2>
+
+  <input type="text" id="enteredCode" placeholder="Enter Secret Code">
+  <button onclick="revealMessage()">Reveal Message</button>
+
+  <div id="output">
+    <h3>🎉 Secret Message</h3>
+    <p id="revealedText"></p>
+    <div id="timer">⏳ Message will disappear in <span id="timeLeft">10</span> seconds</div>
+  </div>
+
+  <script>
+    let originalMessage = '';
+    let originalCode = '';
+    let countdown;
+
+    // Get and decode message from URL
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get('data');
+
+    if (encoded) {
+      try {
+        const decoded = atob(decodeURIComponent(encoded));
+        const [msg, code] = decoded.split('|');
+        originalMessage = msg;
+        originalCode = code;
+      } catch (e) {
+        alert("❌ Invalid or corrupted link.");
+      }
+    } else {
+      alert("❌ No message found in the link.");
+    }
+
+    function revealMessage() {
+      const entered = document.getElementById("enteredCode").value.trim();
+      if (entered === originalCode) {
+        document.getElementById("output").style.display = "block";
+        document.getElementById("revealedText").innerText = originalMessage;
+        startTimer();
+      } else {
+        alert("❌ Wrong code!");
+      }
+    }
+
+    function startTimer() {
+      let seconds = 10;
+      document.getElementById("timeLeft").innerText = seconds;
+      countdown = setInterval(() => {
+        seconds--;
+        document.getElementById("timeLeft").innerText = seconds;
+        if (seconds <= 0) {
+          clearInterval(countdown);
+          document.getElementById("output").innerHTML = "<h3>⏳ Time's Up!</h3><p>This message has expired.</p>";
+        }
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
